@@ -1,0 +1,27 @@
+
+name: shell
+
+on: [push, workflow_dispatch]
+
+jobs:
+  runshell:
+    runs-on: macos-12
+    name: Start a netbsd shell
+    steps:
+    - name: Starting a netbsd VM, please wait. It may take 3 minutes
+      id: shell
+      uses: vmactions/netbsd-vm@v0.0.1
+      with:
+        prepare: |
+          export PKG_PATH="http://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r|cut -f '1 2' -d.)/All/"
+          pkg_add curl
+        run: |
+          pwd
+          ls -lah
+          whoami
+          env
+          uname -a
+    - name: Sleep
+      run: sleep 5
+    - uses: neilpang/debugger-action@master
+
