@@ -12,8 +12,8 @@ jobs:
       id: shell
       uses: vmactions/netbsd-vm@main
       with:
+        release: ${{secrets.RELEASE}}
         prepare: |
-          export PKG_PATH="http://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r|cut -f '1 2' -d.)/All/"
           pkg_add curl
         run: |
           pwd
