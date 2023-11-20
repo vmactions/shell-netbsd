@@ -5,14 +5,23 @@ on: [push, workflow_dispatch]
 
 jobs:
   runshell:
-    runs-on: macos-12
+    runs-on: ubuntu-22.04
     name: Start a netbsd shell
     steps:
+    - uses: vmactions/cf-tunnel@v0
+      id: tunnel
+      with:
+        protocol: http
+        port: 8000
+    - name: Set envs
+      run: echo "TestingDomain=${{steps.tunnel.outputs.server}}" >> $GITHUB_ENV
     - name: Starting a netbsd VM, please wait. It may take 3 minutes
       id: shell
       uses: vmactions/netbsd-vm@main
       with:
-        release: ${{secrets.RELEASE}}
+        nat: |
+          "8000": "80"
+        envs: 'TestingDomain TEST_PREFERRED_CHAIN TEST_ACME_Server INPUT_*'
         prepare: |
           pkg_add curl
         run: |
@@ -22,6 +31,6 @@ jobs:
           env
           uname -a
     - name: Sleep
-      run: sleep 5
+      run: for i in $(seq 1 10) ; do echo $i; sleep 1; done
     - uses: neilpang/debugger-action@master
 
