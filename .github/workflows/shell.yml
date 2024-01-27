@@ -17,7 +17,7 @@ jobs:
       run: echo "TestingDomain=${{steps.tunnel.outputs.server}}" >> $GITHUB_ENV
     - name: Starting a netbsd VM, please wait. It may take 3 minutes
       id: shell
-      uses: vmactions/netbsd-vm@main
+      uses: vmactions/netbsd-vm@v1
       with:
         nat: |
           "8000": "80"
